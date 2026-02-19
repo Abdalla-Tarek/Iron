@@ -369,14 +369,21 @@ public sealed class IronPdfSigner : IPdfSigner
         using var pdf = new PdfDocument(request.PdfFile.Bytes);
         var pageIndex = request.PageNumber <= 0 ? pdf.PageCount - 1 : request.PageNumber - 1;
         using var bitmap = new AnyBitmap(request.SignatureImageFile.Bytes);
+        var scale = request.Scale;
+        
         var stamper = new ImageStamper(bitmap)
         {
-            HorizontalAlignment = request.Corner.Contains("Right", StringComparison.OrdinalIgnoreCase) ? HorizontalAlignment.Right : HorizontalAlignment.Left,
-            VerticalAlignment = request.Corner.Contains("Bottom", StringComparison.OrdinalIgnoreCase) ? VerticalAlignment.Bottom : VerticalAlignment.Top,
-            HorizontalOffset = new Length(request.MarginPx, MeasurementUnit.Pixel, 0),
-            VerticalOffset = new Length(request.MarginPx, MeasurementUnit.Pixel, 0),
-            Scale = request.Scale
+            Scale = scale
         };
+        if (request.X.HasValue || request.Y.HasValue)
+        {
+            stamper.HorizontalAlignment = HorizontalAlignment.Left;
+            stamper.VerticalAlignment = VerticalAlignment.Top;
+            stamper.HorizontalOffset = new Length((int)(request.X ?? 0), MeasurementUnit.Pixel, 0);
+            stamper.VerticalOffset = new Length((int)(request.Y ?? 0), MeasurementUnit.Pixel, 0);
+        }
+        // If the stamp appears "behind" content, flattening the page makes the stamp visible.
+        pdf.Flatten(new[] { pageIndex });
         pdf.ApplyStamp(stamper, pageIndex);
         return Task.FromResult(new BinaryContent
         {

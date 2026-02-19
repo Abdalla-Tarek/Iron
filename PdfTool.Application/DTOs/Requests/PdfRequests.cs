@@ -143,10 +143,10 @@ public sealed class StampSignatureRequest
 {
     public required FileInput PdfFile { get; init; }
     public required FileInput SignatureImageFile { get; init; }
-    public int PageNumber { get; init; } = -1;
-    public string Corner { get; init; } = "BottomRight";
-    public int MarginPx { get; init; } = 24;
+    public int PageNumber { get; init; } = 1;
     public float Scale { get; init; } = 0.3f;
+    public double? X { get; init; }
+    public double? Y { get; init; }
     public bool ReturnBase64 { get; init; }
 }
 

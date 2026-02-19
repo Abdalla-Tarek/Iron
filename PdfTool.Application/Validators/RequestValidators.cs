@@ -117,6 +117,8 @@ public sealed class StampSignatureRequestValidator : AbstractValidator<StampSign
     {
         RuleFor(x => x.PdfFile).SetValidator(new FileInputValidator());
         RuleFor(x => x.SignatureImageFile).SetValidator(new FileInputValidator());
+        RuleFor(x => x.X).GreaterThanOrEqualTo(0).When(x => x.X.HasValue);
+        RuleFor(x => x.Y).GreaterThanOrEqualTo(0).When(x => x.Y.HasValue);
     }
 }
 

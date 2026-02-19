@@ -99,9 +99,9 @@ public sealed class PdfSignController : ControllerBase
             PdfFile = pdf,
             SignatureImageFile = image,
             PageNumber = request.PageNumber,
-            Corner = request.Corner,
-            MarginPx = request.MarginPx,
             Scale = request.Scale,
+            X = request.X,
+            Y = request.Y,
             ReturnBase64 = request.ReturnBase64
         };
 
