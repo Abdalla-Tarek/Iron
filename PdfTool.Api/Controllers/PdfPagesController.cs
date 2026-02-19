@@ -37,6 +37,7 @@ public sealed class PdfPagesController : ControllerBase
         var appRequest = new RemovePageRequest
         {
             PdfFile = file,
+            PdfPassword = request.PdfPassword,
             PageNumber = request.PageNumber,
             ReturnBase64 = request.ReturnBase64
         };

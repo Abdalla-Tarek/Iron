@@ -38,6 +38,7 @@ public sealed class PdfSignController : ControllerBase
         var appRequest = new SignPfxTextRequest
         {
             PdfFile = pdf,
+            PdfPassword = request.PdfPassword,
             PfxFile = pfx,
             PfxPassword = request.PfxPassword,
             Reason = request.Reason,
@@ -68,6 +69,7 @@ public sealed class PdfSignController : ControllerBase
         var appRequest = new SignPfxImageRequest
         {
             PdfFile = pdf,
+            PdfPassword = request.PdfPassword,
             PfxFile = pfx,
             PfxPassword = request.PfxPassword,
             ImageAppearanceFile = image,
@@ -97,6 +99,7 @@ public sealed class PdfSignController : ControllerBase
         var appRequest = new StampSignatureRequest
         {
             PdfFile = pdf,
+            PdfPassword = request.PdfPassword,
             SignatureImageFile = image,
             PageNumber = request.PageNumber,
             Scale = request.Scale,

@@ -39,6 +39,8 @@ public sealed class PdfMergeController : ControllerBase
         {
             Main = main,
             Append = append,
+            MainPassword = request.MainPassword,
+            AppendPassword = request.AppendPassword,
             ReturnBase64 = request.ReturnBase64
         };
 

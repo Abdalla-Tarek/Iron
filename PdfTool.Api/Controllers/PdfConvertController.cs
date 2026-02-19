@@ -37,6 +37,7 @@ public sealed class PdfConvertController : ControllerBase
         var appRequest = new ConvertPdfARequest
         {
             PdfFile = file,
+            PdfPassword = request.PdfPassword,
             PdfAType = request.PdfAType,
             ReturnBase64 = request.ReturnBase64
         };

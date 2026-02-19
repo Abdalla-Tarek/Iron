@@ -33,7 +33,7 @@ public sealed class PdfScanController : ControllerBase
             return BadRequest(ValidationHelper.InvalidFile<PdfScanReport>("Only PDF files are allowed"));
         }
 
-        var result = await _service.ScanAsync(new ScanPdfRequest { PdfFile = file }, ct);
+        var result = await _service.ScanAsync(new ScanPdfRequest { PdfFile = file, PdfPassword = request.PdfPassword }, ct);
         return Ok(result);
     }
 

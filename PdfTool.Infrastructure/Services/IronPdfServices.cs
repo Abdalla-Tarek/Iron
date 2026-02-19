@@ -63,7 +63,7 @@ public sealed class IronPdfWatermarker : IPdfWatermarker
 {
     public Task<BinaryContent> AddWatermarkAsync(WatermarkRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var stamper = new TextStamper(request.Text)
         {
             Opacity = (int)request.Opacity,
@@ -106,7 +106,7 @@ public sealed class IronPdfCompressor : IPdfCompressor
 {
     public Task<CompressResult> CompressAsync(CompressRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var originalSize = pdf.BinaryData.LongLength;
 
         byte[] bestBytes;
@@ -190,7 +190,7 @@ public sealed class IronPdfEncryptor : IPdfEncryptor
 {
     public Task<BinaryContent> EncryptAsync(EncryptRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var security = pdf.SecuritySettings;
         security.OwnerPassword = request.OwnerPassword;
         if (!string.IsNullOrWhiteSpace(request.UserPassword))
@@ -224,7 +224,7 @@ public sealed class IronPdfConverter : IPdfConverter
 {
     public Task<BinaryContent> ConvertToPdfAAsync(ConvertPdfARequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var pdfaVersion = request.PdfAType switch
         {
             PdfAType.PDFA1b => PdfAVersions.PdfA1b,
@@ -242,7 +242,7 @@ public sealed class IronPdfConverter : IPdfConverter
 
     public Task<PageImagesResult> PdfToPngAsync(PdfToPngRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var pages = PageRangeParser.Parse(request.PageRange, pdf.PageCount);
         if (pages.Count == 0)
         {
@@ -292,7 +292,7 @@ public sealed class IronPdfEditor : IPdfEditor
 {
     public Task<BinaryContent> RemovePageAsync(RemovePageRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         pdf.RemovePage(request.PageNumber - 1);
         return Task.FromResult(new BinaryContent
         {
@@ -307,8 +307,8 @@ public sealed class IronPdfMerger : IPdfMerger
 {
     public Task<BinaryContent> MergeAsync(MergeRequest request, CancellationToken ct)
     {
-        using var main = new PdfDocument(request.Main.Bytes);
-        using var append = new PdfDocument(request.Append.Bytes);
+        using var main = PdfPasswordHelper.Open(request.Main.Bytes, request.MainPassword);
+        using var append = PdfPasswordHelper.Open(request.Append.Bytes, request.AppendPassword);
         main.AppendPdf(append);
         return Task.FromResult(new BinaryContent
         {
@@ -323,7 +323,7 @@ public sealed class IronPdfSigner : IPdfSigner
 {
     public Task<BinaryContent> SignPfxTextAsync(SignPfxTextRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var cert = new System.Security.Cryptography.X509Certificates.X509Certificate2(request.PfxFile.Bytes, request.PfxPassword);
         var signature = new PdfSignature(cert)
         {
@@ -346,7 +346,7 @@ public sealed class IronPdfSigner : IPdfSigner
 
     public Task<BinaryContent> SignPfxImageAsync(SignPfxImageRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var cert = new System.Security.Cryptography.X509Certificates.X509Certificate2(request.PfxFile.Bytes, request.PfxPassword);
         var signature = new PdfSignature(cert)
         {
@@ -366,7 +366,7 @@ public sealed class IronPdfSigner : IPdfSigner
 
     public Task<BinaryContent> StampSignatureAsync(StampSignatureRequest request, CancellationToken ct)
     {
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
         var pageIndex = request.PageNumber <= 0 ? pdf.PageCount - 1 : request.PageNumber - 1;
         using var bitmap = new AnyBitmap(request.SignatureImageFile.Bytes);
         var scale = request.Scale;
@@ -405,17 +405,18 @@ public sealed class IronPdfScanner : IPdfScanner
 
     public Task<PdfScanReport> ScanAsync(ScanPdfRequest request, CancellationToken ct)
     {
-        var report = _detector.Analyze(request.PdfFile.Bytes);
+        var scanBytes = PdfPasswordHelper.DecryptBytes(request.PdfFile.Bytes, request.PdfPassword);
+        var report = _detector.Analyze(scanBytes);
         var scan = new PdfScanReport
         {
             Findings = report.Findings,
             Metadata = report.Signals
         };
 
-        scan.Metadata["size_bytes"] = request.PdfFile.Bytes.LongLength;
+        scan.Metadata["size_bytes"] = scanBytes.LongLength;
         try
         {
-            using var pdf = new PdfDocument(request.PdfFile.Bytes);
+            using var pdf = new PdfDocument(scanBytes);
             scan.Metadata["page_count"] = pdf.PageCount;
         }
         catch
@@ -449,8 +450,15 @@ public sealed class IronPdfSanitizer : IPdfSanitizer
 
     public async Task<(BinaryContent Pdf, PdfScanReport Before, PdfScanReport After)> SanitizeAsync(SanitizePdfRequest request, CancellationToken ct)
     {
-        var before = await _scanner.ScanAsync(new ScanPdfRequest { PdfFile = request.PdfFile }, ct);
-        using var pdf = new PdfDocument(request.PdfFile.Bytes);
+        var sourceBytes = PdfPasswordHelper.DecryptBytes(request.PdfFile.Bytes, request.PdfPassword);
+        var sourceFile = new FileInput
+        {
+            Bytes = sourceBytes,
+            FileName = request.PdfFile.FileName,
+            ContentType = request.PdfFile.ContentType
+        };
+        var before = await _scanner.ScanAsync(new ScanPdfRequest { PdfFile = sourceFile }, ct);
+        using var pdf = new PdfDocument(sourceBytes);
         var bitmaps = pdf.ToBitmap(Enumerable.Range(0, pdf.PageCount).ToList(), request.Dpi, true);
         var imageBitmaps = new List<AnyBitmap>();
         try
@@ -492,7 +500,8 @@ public sealed class IronOcrService : IOcrService
         var input = new IronOcr.OcrInput();
         if (request.File.ContentType.Contains("pdf", StringComparison.OrdinalIgnoreCase))
         {
-            input.LoadPdf(request.File.Bytes, 200, false, default, null);
+            var pdfBytes = PdfPasswordHelper.DecryptBytes(request.File.Bytes, request.PdfPassword);
+            input.LoadPdf(pdfBytes, 200, false, default, null);
         }
         else
         {
@@ -515,7 +524,8 @@ public sealed class IronOcrService : IOcrService
         var input = new IronOcr.OcrInput();
         if (request.File.ContentType.Contains("pdf", StringComparison.OrdinalIgnoreCase))
         {
-            input.LoadPdf(request.File.Bytes, 200, false, default, null);
+            var pdfBytes = PdfPasswordHelper.DecryptBytes(request.File.Bytes, request.PdfPassword);
+            input.LoadPdf(pdfBytes, 200, false, default, null);
         }
         else
         {
@@ -939,6 +949,27 @@ public sealed class RegexOcrFieldExtractor : IOcrFieldExtractor
     public List<OcrField> ExtractFields(string rawText)
     {
         return new List<OcrField>();
+    }
+}
+
+internal static class PdfPasswordHelper
+{
+    public static PdfDocument Open(byte[] bytes, string? password)
+    {
+        return string.IsNullOrWhiteSpace(password)
+            ? new PdfDocument(bytes)
+            : new PdfDocument(bytes, password);
+    }
+
+    public static byte[] DecryptBytes(byte[] bytes, string? password)
+    {
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            return bytes;
+        }
+
+        using var pdf = new PdfDocument(bytes, password);
+        return pdf.BinaryData;
     }
 }
 

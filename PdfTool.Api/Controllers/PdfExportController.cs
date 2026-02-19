@@ -42,6 +42,7 @@ public sealed class PdfExportController : ControllerBase
         var appRequest = new PdfToPngRequest
         {
             PdfFile = file,
+            PdfPassword = request.PdfPassword,
             Dpi = request.Dpi,
             ZipOutput = request.ZipOutput,
             PageRange = request.PageRange,

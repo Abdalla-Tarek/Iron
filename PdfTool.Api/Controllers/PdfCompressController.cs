@@ -38,6 +38,7 @@ public sealed class PdfCompressController : ControllerBase
         var appRequest = new CompressRequest
         {
             PdfFile = file,
+            PdfPassword = request.PdfPassword,
             CompressionProfile = request.CompressionProfile,
             ImageQuality = request.ImageQuality,
             Dpi = request.Dpi,

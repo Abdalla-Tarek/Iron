@@ -44,6 +44,7 @@ public sealed class HtmlToPdfRequest
 public sealed class WatermarkRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required string Text { get; init; }
     public float Opacity { get; init; } = 30;
     public int Rotation { get; init; } = 0;
@@ -55,6 +56,7 @@ public sealed class WatermarkRequest
 public sealed class CompressRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public CompressionProfile CompressionProfile { get; init; } = CompressionProfile.Balanced;
     public int? ImageQuality { get; init; }
     public int? Dpi { get; init; }
@@ -65,6 +67,7 @@ public sealed class CompressRequest
 public sealed class EncryptRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required string OwnerPassword { get; init; }
     public string? UserPassword { get; init; }
     public PermissionFlags Permissions { get; init; } = PermissionFlags.All;
@@ -75,6 +78,7 @@ public sealed class EncryptRequest
 public sealed class ConvertPdfARequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public PdfAType PdfAType { get; init; } = PdfAType.PDFA3b;
     public bool ReturnBase64 { get; init; }
 }
@@ -82,6 +86,7 @@ public sealed class ConvertPdfARequest
 public sealed class PdfToPngRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public int Dpi { get; init; } = 200;
     public bool ZipOutput { get; init; } = true;
     public string? PageRange { get; init; }
@@ -91,6 +96,7 @@ public sealed class PdfToPngRequest
 public sealed class RemovePageRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public int PageNumber { get; init; }
     public bool ReturnBase64 { get; init; }
 }
@@ -99,6 +105,8 @@ public sealed class MergeRequest
 {
     public required FileInput Main { get; init; }
     public required FileInput Append { get; init; }
+    public string? MainPassword { get; init; }
+    public string? AppendPassword { get; init; }
     public bool ReturnBase64 { get; init; }
 }
 
@@ -116,6 +124,7 @@ public sealed class ImageToPdfRequest
 public sealed class SignPfxTextRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required FileInput PfxFile { get; init; }
     public required string PfxPassword { get; init; }
     public string Reason { get; init; } = "";
@@ -129,6 +138,7 @@ public sealed class SignPfxTextRequest
 public sealed class SignPfxImageRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required FileInput PfxFile { get; init; }
     public required string PfxPassword { get; init; }
     public required FileInput ImageAppearanceFile { get; init; }
@@ -142,6 +152,7 @@ public sealed class SignPfxImageRequest
 public sealed class StampSignatureRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required FileInput SignatureImageFile { get; init; }
     public int PageNumber { get; init; } = 1;
     public float Scale { get; init; } = 0.3f;
@@ -159,11 +170,13 @@ public sealed class GenerateJsTestPdfRequest
 public sealed class ScanPdfRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
 }
 
 public sealed class SanitizePdfRequest
 {
     public required FileInput PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public SanitizeMode SanitizeMode { get; init; } = SanitizeMode.RasterizeAllPages;
     public int Dpi { get; init; } = 200;
     public bool RemoveMetadata { get; init; } = true;
@@ -173,6 +186,7 @@ public sealed class SanitizePdfRequest
 public sealed class OcrExtractRequest
 {
     public required FileInput File { get; init; }
+    public string? PdfPassword { get; init; }
     public string[]? Keys { get; init; }
     public string Language { get; init; } = "en";
     public string KeySeparators { get; init; } = ":";

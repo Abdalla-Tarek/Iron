@@ -29,6 +29,7 @@ public sealed class HtmlToPdfJsonRequest : HtmlToPdfFormRequest { }
 public sealed class WatermarkFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required string Text { get; init; }
     public float Opacity { get; init; } = 30;
     public int Rotation { get; init; } = 0;
@@ -40,6 +41,7 @@ public sealed class WatermarkFormRequest
 public sealed class WatermarkJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required string Text { get; init; }
     public float Opacity { get; init; } = 30;
     public int Rotation { get; init; } = 0;
@@ -51,6 +53,7 @@ public sealed class WatermarkJsonRequest
 public sealed class CompressFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public CompressionProfile CompressionProfile { get; init; } = CompressionProfile.Balanced;
     public int? ImageQuality { get; init; }
     public int? Dpi { get; init; }
@@ -61,6 +64,7 @@ public sealed class CompressFormRequest
 public sealed class CompressJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public CompressionProfile CompressionProfile { get; init; } = CompressionProfile.Balanced;
     public int? ImageQuality { get; init; }
     public int? Dpi { get; init; }
@@ -71,6 +75,7 @@ public sealed class CompressJsonRequest
 public sealed class EncryptFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required string OwnerPassword { get; init; }
     public string? UserPassword { get; init; }
     public PermissionFlags Permissions { get; init; } = PermissionFlags.All;
@@ -81,6 +86,7 @@ public sealed class EncryptFormRequest
 public sealed class EncryptJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required string OwnerPassword { get; init; }
     public string? UserPassword { get; init; }
     public PermissionFlags Permissions { get; init; } = PermissionFlags.All;
@@ -91,6 +97,7 @@ public sealed class EncryptJsonRequest
 public sealed class ConvertPdfAFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public PdfAType PdfAType { get; init; } = PdfAType.PDFA3b;
     public bool ReturnBase64 { get; init; }
 }
@@ -98,6 +105,7 @@ public sealed class ConvertPdfAFormRequest
 public sealed class ConvertPdfAJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public PdfAType PdfAType { get; init; } = PdfAType.PDFA3b;
     public bool ReturnBase64 { get; init; }
 }
@@ -105,6 +113,7 @@ public sealed class ConvertPdfAJsonRequest
 public sealed class PdfToPngFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public int Dpi { get; init; } = 200;
     public bool ZipOutput { get; init; } = true;
     public string? PageRange { get; init; }
@@ -114,6 +123,7 @@ public sealed class PdfToPngFormRequest
 public sealed class PdfToPngJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public int Dpi { get; init; } = 200;
     public bool ZipOutput { get; init; } = true;
     public string? PageRange { get; init; }
@@ -123,6 +133,7 @@ public sealed class PdfToPngJsonRequest
 public sealed class RemovePageFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public int PageNumber { get; init; }
     public bool ReturnBase64 { get; init; }
 }
@@ -130,6 +141,7 @@ public sealed class RemovePageFormRequest
 public sealed class RemovePageJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public int PageNumber { get; init; }
     public bool ReturnBase64 { get; init; }
 }
@@ -138,6 +150,8 @@ public sealed class MergeFormRequest
 {
     public required IFormFile Main { get; init; }
     public required IFormFile Append { get; init; }
+    public string? MainPassword { get; init; }
+    public string? AppendPassword { get; init; }
     public bool ReturnBase64 { get; init; }
 }
 
@@ -145,6 +159,8 @@ public sealed class MergeJsonRequest
 {
     public required Base64File Main { get; init; }
     public required Base64File Append { get; init; }
+    public string? MainPassword { get; init; }
+    public string? AppendPassword { get; init; }
     public bool ReturnBase64 { get; init; }
 }
 
@@ -173,6 +189,7 @@ public sealed class ImageToPdfJsonRequest
 public sealed class SignPfxTextFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required IFormFile PfxFile { get; init; }
     public required string PfxPassword { get; init; }
     public string Reason { get; init; } = "";
@@ -189,6 +206,7 @@ public sealed class SignPfxTextFormRequest
 public sealed class SignPfxTextJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required Base64File PfxFile { get; init; }
     public required string PfxPassword { get; init; }
     public string Reason { get; init; } = "";
@@ -205,6 +223,7 @@ public sealed class SignPfxTextJsonRequest
 public sealed class SignPfxImageFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required IFormFile PfxFile { get; init; }
     public required string PfxPassword { get; init; }
     public required IFormFile ImageAppearanceFile { get; init; }
@@ -221,6 +240,7 @@ public sealed class SignPfxImageFormRequest
 public sealed class SignPfxImageJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required Base64File PfxFile { get; init; }
     public required string PfxPassword { get; init; }
     public required Base64File ImageAppearanceFile { get; init; }
@@ -237,8 +257,9 @@ public sealed class SignPfxImageJsonRequest
 public sealed class StampSignatureFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required IFormFile SignatureImageFile { get; init; }
-    public int PageNumber { get; init; } = 1;
+    public int PageNumber { get; init; } = -1;
     public float Scale { get; init; } = 0.3f;
     public double? X { get; init; }
     public double? Y { get; init; }
@@ -248,6 +269,7 @@ public sealed class StampSignatureFormRequest
 public sealed class StampSignatureJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public required Base64File SignatureImageFile { get; init; }
     public int PageNumber { get; init; } = -1;
     public string Corner { get; init; } = "BottomRight";
@@ -271,16 +293,19 @@ public sealed class GenerateJsTestPdfJsonRequest : GenerateJsTestPdfFormRequest 
 public sealed class ScanPdfFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
 }
 
 public sealed class ScanPdfJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
 }
 
 public sealed class SanitizePdfFormRequest
 {
     public required IFormFile PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public SanitizeMode SanitizeMode { get; init; } = SanitizeMode.RasterizeAllPages;
     public int Dpi { get; init; } = 200;
     public bool RemoveMetadata { get; init; } = true;
@@ -290,6 +315,7 @@ public sealed class SanitizePdfFormRequest
 public sealed class SanitizePdfJsonRequest
 {
     public required Base64File PdfFile { get; init; }
+    public string? PdfPassword { get; init; }
     public SanitizeMode SanitizeMode { get; init; } = SanitizeMode.RasterizeAllPages;
     public int Dpi { get; init; } = 200;
     public bool RemoveMetadata { get; init; } = true;
@@ -305,10 +331,12 @@ public sealed class OcrExtractFormRequest: OcrExtractTextRequest
 public class OcrExtractTextRequest
 {
     public required IFormFile File { get; init; }
+    public string? PdfPassword { get; init; }
 
 }
 
 public sealed class OcrExtractJsonRequest
 {
     public required Base64File File { get; init; }
+    public string? PdfPassword { get; init; }
 }

@@ -36,6 +36,7 @@ public sealed class OcrController : ControllerBase
         var result = await _service.ExtractAsync(new OcrExtractRequest
         {
             File = file,
+            PdfPassword = request.PdfPassword,
             Keys = request.Keys,
             Language = request.Language,
             KeySeparators = request.KeySeparators
@@ -54,7 +55,7 @@ public sealed class OcrController : ControllerBase
             return BadRequest(ValidationHelper.InvalidFile<string>("Only PDF or image files are allowed"));
         }
 
-        var result = await _service.ExtractTextAsync(new OcrExtractRequest { File = file }, ct);
+        var result = await _service.ExtractTextAsync(new OcrExtractRequest { File = file, PdfPassword = request.PdfPassword }, ct);
         return Ok(result);
     }
 
