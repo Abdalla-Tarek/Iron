@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="PdfTool.Api/PdfTool.Api.csproj" />
+  <Project Path="PdfTool.Application/PdfTool.Application.csproj" />
+  <Project Path="PdfTool.Domain/PdfTool.Domain.csproj" />
+  <Project Path="PdfTool.Infrastructure/PdfTool.Infrastructure.csproj" />
+  <Project Path="PdfTool.Tests/PdfTool.Tests.csproj" />
+</Solution>
