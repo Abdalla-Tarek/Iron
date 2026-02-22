@@ -40,9 +40,9 @@ public sealed class PdfCompressController : ControllerBase
             PdfFile = file,
             PdfPassword = request.PdfPassword,
             CompressionProfile = request.CompressionProfile,
-            ImageQuality = request.ImageQuality,
-            Dpi = request.Dpi,
-            RemoveUnusedObjects = request.RemoveUnusedObjects,
+            //ImageQuality = request.ImageQuality,
+            //Dpi = request.Dpi,
+            //RemoveUnusedObjects = request.RemoveUnusedObjects,
             ReturnBase64 = request.ReturnBase64
         };
 

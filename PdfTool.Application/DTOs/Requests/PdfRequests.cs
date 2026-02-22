@@ -67,7 +67,7 @@ public sealed class CompressRequest
 public sealed class EncryptRequest
 {
     public required FileInput PdfFile { get; init; }
-    public string? PdfPassword { get; init; }
+    //public string? PdfPassword { get; init; }
     public required string OwnerPassword { get; init; }
     public string? UserPassword { get; init; }
     public PermissionFlags Permissions { get; init; } = PermissionFlags.All;

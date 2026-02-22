@@ -37,11 +37,11 @@ public sealed class PdfEncryptController : ControllerBase
         var appRequest = new EncryptRequest
         {
             PdfFile = file,
-            PdfPassword = request.PdfPassword,
+            //PdfPassword = request.PdfPassword,
             OwnerPassword = request.OwnerPassword,
             UserPassword = request.UserPassword,
             Permissions = request.Permissions,
-            EncryptionStrength = request.EncryptionStrength,
+            //EncryptionStrength = request.EncryptionStrength,
             ReturnBase64 = request.ReturnBase64
         };
 

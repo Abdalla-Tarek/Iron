@@ -190,7 +190,8 @@ public sealed class IronPdfEncryptor : IPdfEncryptor
 {
     public Task<BinaryContent> EncryptAsync(EncryptRequest request, CancellationToken ct)
     {
-        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
+        //using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
+        using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, null);
         var security = pdf.SecuritySettings;
         security.OwnerPassword = request.OwnerPassword;
         if (!string.IsNullOrWhiteSpace(request.UserPassword))
@@ -275,7 +276,7 @@ public sealed class IronPdfConverter : IPdfConverter
             pdf.Compress(new CompressionOptions
             {
                 CompressImages = true,
-                JpegQuality = request.ImageQuality ?? 75,
+                JpegQuality = request.ImageQuality ?? 100,
                 ShrinkImages = true
             });
         }

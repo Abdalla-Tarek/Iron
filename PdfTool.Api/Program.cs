@@ -98,6 +98,7 @@ var ironOcrKey = builder.Configuration["IronOcrLicenseKey"];
 if (!string.IsNullOrWhiteSpace(ironOcrKey))
 {
     IronOcr.License.LicenseKey = ironOcrKey;
+    IronQr.License.LicenseKey = ironOcrKey;
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();

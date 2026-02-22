@@ -55,9 +55,9 @@ public sealed class CompressFormRequest
     public required IFormFile PdfFile { get; init; }
     public string? PdfPassword { get; init; }
     public CompressionProfile CompressionProfile { get; init; } = CompressionProfile.Balanced;
-    public int? ImageQuality { get; init; }
-    public int? Dpi { get; init; }
-    public bool RemoveUnusedObjects { get; init; } = true;
+    //public int? ImageQuality { get; init; }
+    //public int? Dpi { get; init; }
+    //public bool RemoveUnusedObjects { get; init; } = true;
     public bool ReturnBase64 { get; init; }
 }
 
@@ -75,11 +75,11 @@ public sealed class CompressJsonRequest
 public sealed class EncryptFormRequest
 {
     public required IFormFile PdfFile { get; init; }
-    public string? PdfPassword { get; init; }
+    //public string? PdfPassword { get; init; }
     public required string OwnerPassword { get; init; }
     public string? UserPassword { get; init; }
     public PermissionFlags Permissions { get; init; } = PermissionFlags.All;
-    public EncryptionStrength EncryptionStrength { get; init; } = EncryptionStrength.Aes256;
+    //public EncryptionStrength EncryptionStrength { get; init; } = EncryptionStrength.Aes256;
     public bool ReturnBase64 { get; init; }
 }
 
@@ -167,11 +167,11 @@ public sealed class MergeJsonRequest
 public sealed class ImageToPdfFormRequest
 {
     public required IFormFile ImageFile { get; init; }
-    public string PageSize { get; init; } = "A4";
+    //public string PageSize { get; init; } = "A4";
     public bool CompressAfter { get; init; } = true;
-    public CompressionProfile CompressionProfile { get; init; } = CompressionProfile.ImageFocused;
-    public int? ImageQuality { get; init; }
-    public int? Dpi { get; init; }
+    //public CompressionProfile CompressionProfile { get; init; } = CompressionProfile.ImageFocused;
+    //public int? ImageQuality { get; init; }
+    //public int? Dpi { get; init; }
     public bool ReturnBase64 { get; init; }
 }
 
@@ -339,4 +339,10 @@ public sealed class OcrExtractJsonRequest
 {
     public required Base64File File { get; init; }
     public string? PdfPassword { get; init; }
+}
+
+public sealed class QrReadFormRequest
+{
+    //public string? Text { get; init; }
+    public IFormFile? File { get; init; }
 }

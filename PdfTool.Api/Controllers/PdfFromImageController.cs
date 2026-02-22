@@ -37,11 +37,11 @@ public sealed class PdfFromImageController : ControllerBase
         var appRequest = new ImageToPdfRequest
         {
             ImageFile = image,
-            PageSize = request.PageSize,
+            //PageSize = request.PageSize,
             CompressAfter = request.CompressAfter,
-            CompressionProfile = request.CompressionProfile,
-            ImageQuality = request.ImageQuality,
-            Dpi = request.Dpi,
+            //CompressionProfile = request.CompressionProfile,
+            //ImageQuality = request.ImageQuality,
+            //Dpi = request.Dpi,
             ReturnBase64 = request.ReturnBase64
         };
 
