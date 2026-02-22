@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
 using IronPdf;
 using IronPdf.Editing;
 using IronPdf.Imaging;
@@ -20,6 +21,7 @@ using PdfTool.Application.Interfaces;
 using PdfTool.Application.Utilities;
 using PdfTool.Domain.Enums;
 using PdfTool.Domain.Models;
+using System.Security.Cryptography;
 
 namespace PdfTool.Infrastructure.Services;
 
@@ -326,7 +328,7 @@ public sealed class IronPdfSigner : IPdfSigner
     public Task<BinaryContent> SignPfxTextAsync(SignPfxTextRequest request, CancellationToken ct)
     {
         using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
-        var cert = new System.Security.Cryptography.X509Certificates.X509Certificate2(request.PfxFile.Bytes, request.PfxPassword);
+        var cert = LoadCertificate(request.PfxFile.Bytes, request.PfxPassword);
         var signature = new PdfSignature(cert)
         {
             SigningReason = request.Reason,
@@ -349,7 +351,7 @@ public sealed class IronPdfSigner : IPdfSigner
     public Task<BinaryContent> SignPfxImageAsync(SignPfxImageRequest request, CancellationToken ct)
     {
         using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, request.PdfPassword);
-        var cert = new System.Security.Cryptography.X509Certificates.X509Certificate2(request.PfxFile.Bytes, request.PfxPassword);
+        var cert = LoadCertificate(request.PfxFile.Bytes, request.PfxPassword);
         var signature = new PdfSignature(cert)
         {
             SigningReason = request.Reason,
@@ -393,6 +395,20 @@ public sealed class IronPdfSigner : IPdfSigner
             ContentType = "application/pdf",
             FileName = "stamped.pdf"
         });
+    }
+
+    private static X509Certificate2 LoadCertificate(byte[] bytes, string password)
+    {
+        try
+        {
+            return new X509Certificate2(bytes, password,
+                X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.Exportable);
+        }
+        catch (CryptographicException)
+        {
+            return new X509Certificate2(bytes, password,
+                X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+        }
     }
 }
 
