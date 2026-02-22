@@ -252,7 +252,7 @@ public sealed class IronPdfConverter : IPdfConverter
         {
             pages = Enumerable.Range(0, pdf.PageCount).ToList();
         }
-        var bitmaps = pdf.ToBitmap(pages, request.Dpi, true);
+        var bitmaps = pdf.ToBitmap(pages, request.Dpi);
         var result = new PageImagesResult();
 
         for (var i = 0; i < bitmaps.Length; i++)
