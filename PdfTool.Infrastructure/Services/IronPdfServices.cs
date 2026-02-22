@@ -194,10 +194,11 @@ public sealed class IronPdfEncryptor : IPdfEncryptor
         using var pdf = PdfPasswordHelper.Open(request.PdfFile.Bytes, null);
         var security = pdf.SecuritySettings;
         security.OwnerPassword = request.OwnerPassword;
-        if (!string.IsNullOrWhiteSpace(request.UserPassword))
-        {
-            security.UserPassword = request.UserPassword;
-        }
+        var userPassword = string.IsNullOrWhiteSpace(request.UserPassword)
+            ? request.OwnerPassword
+            : request.UserPassword;
+        security.UserPassword = userPassword;
+        //security.EncryptionStrength = request.EncryptionStrength;
 
         security.AllowUserPrinting = request.Permissions.HasFlag(PermissionFlags.Print)
             ? PdfPrintSecurity.FullPrintRights
