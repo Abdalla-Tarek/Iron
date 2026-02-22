@@ -192,8 +192,8 @@ public sealed class SignPfxTextFormRequest
     public string? PdfPassword { get; init; }
     public required IFormFile PfxFile { get; init; }
     public required string PfxPassword { get; init; }
-    public string Reason { get; init; } = "";
-    public string Location { get; init; } = "";
+    //public string Reason { get; init; } = "";
+    //public string Location { get; init; } = "";
     public string VisibleText { get; init; } = "Signed";
     public int PageNumber { get; init; } = 1;
     public double X { get; init; }
@@ -232,8 +232,8 @@ public sealed class SignPfxImageFormRequest
     public double Y { get; init; }
     public double Width { get; init; }
     public double Height { get; init; }
-    public string Reason { get; init; } = "";
-    public string Location { get; init; } = "";
+    //public string Reason { get; init; } = "";
+    //public string Location { get; init; } = "";
     public bool ReturnBase64 { get; init; }
 }
 
