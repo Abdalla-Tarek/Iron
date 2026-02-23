@@ -76,17 +76,17 @@ public sealed class QrController : ControllerBase
                     return BadRequest(new { success = false, error = "Only PNG or JPG images are allowed." });
                 }
 
-                var value = ReadFromImageBytes(input.Bytes);
-                return value != null
-                    ? Ok(new { success = true, mode = "decoded", value })
+                var values = ReadFromImageBytes(input.Bytes);
+                return values.Count > 0
+                    ? Ok(new { success = true, mode = "decoded", values })
                     : Ok(new { success = false, message = "No QR code detected." });
             }
 
             if (_validator.IsPdf(input.Bytes))
             {
-                var value = ReadFromPdfBytes(input.Bytes);
-                return value != null
-                    ? Ok(new { success = true, mode = "decoded", value })
+                var values = ReadFromPdfBytes(input.Bytes);
+                return values.Count > 0
+                    ? Ok(new { success = true, mode = "decoded", values })
                     : Ok(new { success = false, message = "No QR code detected." });
             }
 
@@ -181,7 +181,8 @@ public sealed class QrController : ControllerBase
             return BadRequest(new { success = false, error = "Only PNG or JPG images are allowed." });
         }
 
-        var value = ReadFromImageBytes(input.Bytes);
+        var values = ReadFromImageBytes(input.Bytes);
+        var value = values.FirstOrDefault();
         if (string.IsNullOrWhiteSpace(value))
         {
             return Ok(new { success = false, message = "No QR code detected." });
@@ -234,23 +235,28 @@ public sealed class QrController : ControllerBase
         return contentType != null && AllowedImageContentTypes.Contains(contentType);
     }
 
-    private static string? ReadFromImageBytes(byte[] bytes)
+    private static List<string> ReadFromImageBytes(byte[] bytes)
     {
         using var bitmap = new AnyBitmap(bytes);
         var input = new QrImageInput(bitmap);
         var reader = new QrReader();
         var results = reader.Read(input);
 
-        return results.FirstOrDefault()?.Value;
+        return results
+            .Select(r => r.Value)
+            .Where(v => !string.IsNullOrWhiteSpace(v))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
     }
 
-    private static string? ReadFromPdfBytes(byte[] bytes)
+    private static List<string> ReadFromPdfBytes(byte[] bytes)
     {
         using var pdf = new PdfDocument(bytes);
         // Render PDF pages to images so we can scan each page for QR codes.
         var pages = Enumerable.Range(0, pdf.PageCount).ToList();
         var bitmaps = pdf.ToBitmap(pages, 200, true);
         var reader = new QrReader();
+        var values = new HashSet<string>(StringComparer.Ordinal);
 
         try
         {
@@ -258,10 +264,9 @@ public sealed class QrController : ControllerBase
             {
                 var input = new QrImageInput(bmp);
                 var results = reader.Read(input);
-                var value = results.FirstOrDefault()?.Value;
-                if (!string.IsNullOrWhiteSpace(value))
+                foreach (var value in results.Select(r => r.Value).Where(v => !string.IsNullOrWhiteSpace(v)))
                 {
-                    return value;
+                    values.Add(value);
                 }
             }
         }
@@ -274,7 +279,7 @@ public sealed class QrController : ControllerBase
             }
         }
 
-        return null;
+        return values.ToList();
     }
 
     private sealed class QrPayload
