@@ -22,6 +22,7 @@ builder.Host.UseSerilog((ctx, cfg) =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddDataProtection();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<HtmlToPdfRequestValidator>();
