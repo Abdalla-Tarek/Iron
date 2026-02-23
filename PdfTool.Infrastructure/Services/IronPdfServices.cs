@@ -33,10 +33,10 @@ public sealed class IronPdfCreator : IPdfCreator
         var options = renderer.RenderingOptions;
         options.PaperSize = ParsePaperSize(request.PageOptions.PageSize);
         options.DPI = request.PageOptions.Dpi;
-        options.MarginTop = request.Margins.Top;
-        options.MarginBottom = request.Margins.Bottom;
-        options.MarginLeft = request.Margins.Left;
-        options.MarginRight = request.Margins.Right;
+        //options.MarginTop = request.Margins.Top;
+        //options.MarginBottom = request.Margins.Bottom;
+        //options.MarginLeft = request.Margins.Left;
+        //options.MarginRight = request.Margins.Right;
         options.PaperOrientation = request.Landscape ? PdfPaperOrientation.Landscape : PdfPaperOrientation.Portrait;
 
         var pdf = request.BaseUrl is null

@@ -16,10 +16,10 @@ public class HtmlToPdfFormRequest
     public string? BaseUrl { get; init; }
     public string PageSize { get; init; } = "A4";
     public int Dpi { get; init; } = 300;
-    public int MarginTop { get; init; } = 10;
-    public int MarginRight { get; init; } = 10;
-    public int MarginBottom { get; init; } = 10;
-    public int MarginLeft { get; init; } = 10;
+    //public int MarginTop { get; init; } = 10;
+    //public int MarginRight { get; init; } = 10;
+    //public int MarginBottom { get; init; } = 10;
+    //public int MarginLeft { get; init; } = 10;
     public bool Landscape { get; init; }
     public bool ReturnBase64 { get; init; }
 }
